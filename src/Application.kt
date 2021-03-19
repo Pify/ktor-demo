@@ -6,7 +6,6 @@ import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.request.*
 import io.ktor.routing.*
-import io.ktor.http.*
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.features.*
@@ -26,15 +25,20 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        routing {
+        fun Route.testGetFunction() {
             get("/test") {
                 call.respondText("This is GET route")
             }
 
+        }
+
+        fun Route.testPostFunction() {
             post("/test") {
                 call.respondText("this is POST route")
             }
+        }
 
+        fun Route.postWithParameter() {
             post("/test2") {
                 val parameters = call.receiveParameters()
 
@@ -43,7 +47,9 @@ fun Application.module(testing: Boolean = false) {
 
                 call.respondText("This is a test POST request with parameter values $param1 and $param2")
             }
+        }
 
+        fun Route.login() {
             post("/login") {
                 val loginRequest = call.receive<LoginRequest>()
 
@@ -53,6 +59,13 @@ fun Application.module(testing: Boolean = false) {
                     call.respond(LoginResponse(false, "Credentials are invalid!"))
                 }
             }
+        }
+
+        routing {
+            testGetFunction()
+            testPostFunction()
+            postWithParameter()
+            login()
         }
     }
 }
